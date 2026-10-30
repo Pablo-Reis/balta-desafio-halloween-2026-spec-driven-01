@@ -1,0 +1,30 @@
+﻿<Window x:Class="Productivity.App.Windows.StartDemandWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Iniciar demanda" Width="520" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" Topmost="True" ShowInTaskbar="False"
+        Loaded="OnLoaded" PreviewKeyDown="OnPreviewKeyDown">
+    <StackPanel Margin="24">
+        <TextBlock Text="O que você vai fazer agora?" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,4" />
+        <TextBlock x:Name="WarningText" Style="{StaticResource Muted}" TextWrapping="Wrap" Visibility="Collapsed"
+                   Foreground="{StaticResource PausedBrush}" Margin="0,0,0,8" />
+
+        <TextBlock Text="Tipo da demanda" Margin="0,12,0,4" />
+        <ComboBox x:Name="TypeBox" IsEditable="True" />
+
+        <TextBlock Text="O que será feito" Margin="0,12,0,4" />
+        <TextBox x:Name="TitleBox" MaxLength="200" />
+
+        <TextBlock Text="Detalhes (opcional)" Margin="0,12,0,4" />
+        <TextBox x:Name="DetailsBox" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="64" MaxHeight="120"
+                 VerticalScrollBarVisibility="Auto" />
+
+        <TextBlock x:Name="ErrorText" Foreground="{DynamicResource SystemFillColorCriticalBrush}" Margin="0,10,0,0"
+                   TextWrapping="Wrap" Visibility="Collapsed" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Cancelar (Esc)" Click="OnCancel" Margin="0,0,8,0" Padding="16,7" />
+            <Button Content="Iniciar (Enter)" Click="OnConfirm" Style="{StaticResource AccentButton}" IsDefault="True" />
+        </StackPanel>
+    </StackPanel>
+</Window>

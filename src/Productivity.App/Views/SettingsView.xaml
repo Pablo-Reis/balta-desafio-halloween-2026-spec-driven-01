@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="Productivity.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Loaded="OnLoaded">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="28" MaxWidth="720" HorizontalAlignment="Left">
+            <TextBlock Text="Configurações" Style="{StaticResource PageTitle}" />
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Geral" Style="{StaticResource SectionTitle}" />
+                    <CheckBox x:Name="AutoStartBox" Content="Iniciar junto com o Windows" />
+                    <TextBlock Text="Tema" Margin="0,14,0,6" />
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="ThemeSystem" Content="Automático (sistema)" GroupName="Theme" Margin="0,0,16,0" />
+                        <RadioButton x:Name="ThemeLight" Content="Claro" GroupName="Theme" Margin="0,0,16,0" />
+                        <RadioButton x:Name="ThemeDark" Content="Escuro" GroupName="Theme" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Atalhos de teclado" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Clique no campo e pressione a combinação desejada (use Ctrl, Alt, Shift ou Win + uma tecla)."
+                               Style="{StaticResource Muted}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="260" />
+                            <ColumnDefinition Width="200" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Iniciar demanda" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="StartHotkeyBox" Grid.Column="1" IsReadOnly="True" Margin="0,4" PreviewKeyDown="OnHotkeyKeyDown" />
+                        <TextBlock Grid.Row="1" Text="Pausar / retomar demanda" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="PauseHotkeyBox" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Margin="0,4" PreviewKeyDown="OnHotkeyKeyDown" />
+                        <TextBlock Grid.Row="2" Text="Finalizar demanda" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="FinishHotkeyBox" Grid.Row="2" Grid.Column="1" IsReadOnly="True" Margin="0,4" PreviewKeyDown="OnHotkeyKeyDown" />
+                        <TextBlock Grid.Row="3" Text="Escrever anotação" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="NoteHotkeyBox" Grid.Row="3" Grid.Column="1" IsReadOnly="True" Margin="0,4" PreviewKeyDown="OnHotkeyKeyDown" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Pausas e descansos" Style="{StaticResource SectionTitle}" />
+                    <TextBlock Text="Os avisos são apenas notificações: não pausam nem retomam a demanda automaticamente. Use 0 para desativar."
+                               Style="{StaticResource Muted}" Margin="0,0,0,10" TextWrapping="Wrap" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="360" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Avisar para descansar após trabalhar por" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="BreakAlertBox" Grid.Column="1" Margin="0,4" MaxLength="4" PreviewTextInput="OnNumberInput" />
+                        <TextBlock Grid.Column="2" Text="minutos" VerticalAlignment="Center" Margin="8,0,0,0" />
+                        <TextBlock Grid.Row="1" Text="Avisar para voltar após descansar por" VerticalAlignment="Center" Margin="0,4" />
+                        <TextBox x:Name="BreakDurationBox" Grid.Row="1" Grid.Column="1" Margin="0,4" MaxLength="4" PreviewTextInput="OnNumberInput" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="minutos" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Salvar configurações" Style="{StaticResource AccentButton}" Click="OnSaveClick" />
+                <Button Content="Restaurar padrões" Style="{StaticResource GlassButton}" Click="OnDefaultsClick" Margin="8,0,0,0" />
+            </StackPanel>
+            <TextBlock x:Name="StatusText" Margin="0,12,0,0" TextWrapping="Wrap" />
+            <TextBlock x:Name="LogPathText" Style="{StaticResource Muted}" FontSize="11" Margin="0,24,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+

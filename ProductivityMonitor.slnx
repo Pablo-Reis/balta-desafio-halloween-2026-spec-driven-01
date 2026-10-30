@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Productivity.App/Productivity.App.csproj" />
+    <Project Path="src/Productivity.Application/Productivity.Application.csproj" />
+    <Project Path="src/Productivity.Domain/Productivity.Domain.csproj" />
+    <Project Path="src/Productivity.Infrastructure/Productivity.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Productivity.Application.Tests/Productivity.Application.Tests.csproj" />
+    <Project Path="tests/Productivity.Domain.Tests/Productivity.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

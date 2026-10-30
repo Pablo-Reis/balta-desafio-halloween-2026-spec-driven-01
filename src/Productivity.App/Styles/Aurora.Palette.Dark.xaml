@@ -1,0 +1,37 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <!-- Paleta Aurora - tema escuro -->
+    <SolidColorBrush x:Key="Aurora.Text" Color="#F5F5F7" />
+    <SolidColorBrush x:Key="Aurora.TextNav" Color="#B8FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.TextSecondary" Color="#A6FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.TextMuted" Color="#8CFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.WindowBase" Color="#F00A0A12" />
+    <SolidColorBrush x:Key="Aurora.WindowTint" Color="#7A161622" />
+    <SolidColorBrush x:Key="Aurora.WindowBorder" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.Glass" Color="#0DFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.GlassStrong" Color="#10FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.GlassHover" Color="#17FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.GlassBorder" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.GlassBorderHover" Color="#2EFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.Sidebar" Color="#0AFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.SidebarBorder" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.SidebarInner" Color="#2E000000" />
+    <SolidColorBrush x:Key="Aurora.Chip" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.ChipBorder" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.ButtonGlass" Color="#17FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.ButtonGlassBorder" Color="#29FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.WinButton" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.WinButtonHover" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.NavHover" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.BarEmpty" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.RingTrack" Color="#14FFFFFF" />
+    <SolidColorBrush x:Key="Aurora.Island" Color="#E0121220" />
+    <SolidColorBrush x:Key="Aurora.IslandBorder" Color="#1CFFFFFF" />
+    <SolidColorBrush x:Key="Aurora.HoverOverlay" Color="#FFFFFF" />
+    <LinearGradientBrush x:Key="Aurora.TimeText" StartPoint="0,0" EndPoint="1,0.35">
+        <GradientStop Color="#FFFFFF" Offset="0.3" />
+        <GradientStop Color="#A5F3FC" Offset="1" />
+    </LinearGradientBrush>
+    <sys:Double x:Key="Aurora.Blob1Opacity">0.55</sys:Double>
+    <sys:Double x:Key="Aurora.Blob2Opacity">0.45</sys:Double>
+    <sys:Double x:Key="Aurora.Blob3Opacity">0.40</sys:Double>
+</ResourceDictionary>

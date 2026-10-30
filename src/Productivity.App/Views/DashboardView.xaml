@@ -1,0 +1,211 @@
+﻿<UserControl x:Class="Productivity.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctl="clr-namespace:Productivity.App.Controls"
+             xmlns:sup="clr-namespace:Productivity.App.Support"
+             Loaded="OnLoaded" Unloaded="OnUnloaded">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="6,2,10,6">
+
+            <!-- Cabeçalho: data e saudação -->
+            <Grid Margin="6,4,6,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock x:Name="DateText" FontSize="13" Style="{StaticResource Muted}" />
+                    <TextBlock x:Name="GreetingText" FontSize="28" FontWeight="SemiBold" Margin="0,4,0,0"
+                               Foreground="{DynamicResource Aurora.Text}" />
+                </StackPanel>
+                <Button Grid.Column="1" Style="{StaticResource PillButton}" VerticalAlignment="Bottom" Click="OnStartClick"
+                        AutomationProperties.Name="Nova demanda">
+                    <StackPanel Orientation="Horizontal">
+                        <ctl:Icon Data="{StaticResource Icon.Plus}" Width="15" Height="15" StrokeWidth="2.2" Margin="0,0,8,0" />
+                        <TextBlock Text="Nova demanda" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Sessão atual -->
+            <Border Style="{StaticResource SessionCard}" sup:Motion.Rise="0.05" sup:Motion.Lift="True" ClipToBounds="True">
+                <Grid>
+                    <Ellipse Width="360" Height="360" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-170,-110,0" IsHitTestVisible="False">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#528B5CF6" Offset="0" />
+                                <GradientStop Color="#008B5CF6" Offset="0.65" />
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel VerticalAlignment="Center" Margin="0,0,24,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="StatusBadge" CornerRadius="999" BorderThickness="1" Padding="10,5,12,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctl:StatusDot x:Name="StatusDot" Margin="0,0,8,0" />
+                                        <TextBlock x:Name="StatusText" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock x:Name="CurrentType" Style="{StaticResource Overline}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock x:Name="CurrentTitle" FontSize="26" FontWeight="SemiBold" Margin="0,14,0,0" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource Aurora.Text}" />
+                            <TextBlock x:Name="CurrentDescription" FontSize="14" Margin="0,8,0,0" TextWrapping="Wrap" LineHeight="21"
+                                       Style="{StaticResource Muted}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,22,0,0">
+                                <Button x:Name="StartButton" Style="{StaticResource AccentButton}" Click="OnStartClick" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctl:Icon Data="{StaticResource Icon.Play}" Filled="True" Width="14" Height="14" Margin="0,0,8,0" />
+                                        <TextBlock Text="Iniciar demanda" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="PauseButton" Style="{StaticResource GlassButton}" Click="OnPauseClick" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctl:Icon x:Name="PauseIcon" Data="{StaticResource Icon.Pause}" Filled="True" Width="14" Height="14" Margin="0,0,8,0" />
+                                        <TextBlock x:Name="PauseLabel" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="FinishButton" Style="{StaticResource AccentButton}" Click="OnFinishClick">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctl:Icon Data="{StaticResource Icon.Stop}" Filled="True" Width="14" Height="14" Margin="0,0,8,0" />
+                                        <TextBlock Text="Finalizar" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Anel de progresso: completa a cada minuto -->
+                        <Grid Grid.Column="1" Width="232" Height="232">
+                            <ctl:RingProgress x:Name="Ring" Thickness="10" Stroke="{StaticResource Aurora.Accent}"
+                                              Track="{DynamicResource Aurora.RingTrack}" />
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock x:Name="CurrentTimer" Style="{StaticResource Timer}" FontSize="40" HorizontalAlignment="Center"
+                                           AutomationProperties.Name="Tempo da sessão" />
+                                <TextBlock x:Name="CurrentExtra" FontSize="12" Style="{StaticResource Muted}" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Indicadores -->
+            <UniformGrid Columns="4" Margin="0,0,-12,0">
+                <Border Style="{StaticResource Card}" Margin="0,0,12,16" sup:Motion.Rise="0.12" sup:Motion.Lift="True">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="Hoje" FontSize="13" Style="{StaticResource Muted}" />
+                            <ctl:Icon Data="{StaticResource Icon.Today}" Width="16" Height="16" HorizontalAlignment="Right" Foreground="{DynamicResource Aurora.TextSecondary}" />
+                        </Grid>
+                        <TextBlock x:Name="TodayText" FontSize="28" FontWeight="SemiBold" Margin="0,10,0,0" Foreground="{DynamicResource Aurora.Text}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,12,16" sup:Motion.Rise="0.17" sup:Motion.Lift="True">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="Total em 30 dias" FontSize="13" Style="{StaticResource Muted}" />
+                            <ctl:Icon Data="{StaticResource Icon.Calendar}" Width="16" Height="16" HorizontalAlignment="Right" Foreground="{DynamicResource Aurora.TextSecondary}" />
+                        </Grid>
+                        <TextBlock x:Name="TotalText" FontSize="28" FontWeight="SemiBold" Margin="0,10,0,0" Foreground="{DynamicResource Aurora.Text}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,12,16" sup:Motion.Rise="0.22" sup:Motion.Lift="True">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="Média por dia" FontSize="13" Style="{StaticResource Muted}" />
+                            <ctl:Icon Data="{StaticResource Icon.Trend}" Width="16" Height="16" HorizontalAlignment="Right" Foreground="{DynamicResource Aurora.TextSecondary}" />
+                        </Grid>
+                        <TextBlock x:Name="AverageText" FontSize="28" FontWeight="SemiBold" Margin="0,10,0,0" Foreground="{DynamicResource Aurora.Text}" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,12,16" sup:Motion.Rise="0.27" sup:Motion.Lift="True">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="Demandas" FontSize="13" Style="{StaticResource Muted}" />
+                            <ctl:Icon Data="{StaticResource Icon.Layers}" Width="16" Height="16" HorizontalAlignment="Right" Foreground="{DynamicResource Aurora.TextSecondary}" />
+                        </Grid>
+                        <TextBlock x:Name="CountText" FontSize="28" FontWeight="SemiBold" Margin="0,10,0,0" Foreground="{DynamicResource Aurora.Text}" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Gráfico de 30 dias -->
+            <Border Style="{StaticResource Card}" CornerRadius="22" Padding="22,20,22,16" sup:Motion.Rise="0.32" sup:Motion.Lift="True">
+                <StackPanel>
+                    <Grid Margin="0,0,0,16">
+                        <TextBlock Text="Horas por dia" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource Aurora.Text}" />
+                        <TextBlock Text="Últimos 30 dias" FontSize="12" Style="{StaticResource Muted}" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+                    </Grid>
+                    <ItemsControl x:Name="DaysChart" Height="180">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ToolTip="{Binding Tooltip}" Background="Transparent" Margin="2.5,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                                        <Border Visibility="{Binding ChipVisibility}" CornerRadius="6" Padding="6,2" Margin="0,0,0,8"
+                                                Background="{DynamicResource Aurora.Chip}" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding ChipText}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Aurora.Text}" />
+                                        </Border>
+                                        <Border Width="{Binding BarWidth}" Height="{Binding BarHeight}" CornerRadius="6" HorizontalAlignment="Center"
+                                                Background="{Binding Fill}" Effect="{Binding Glow}" sup:Motion.Grow="{Binding Delay}" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Text="{Binding Label}" FontSize="10" HorizontalAlignment="Center" Margin="0,8,0,0"
+                                               Foreground="{Binding LabelBrush}" Typography.NumeralAlignment="Tabular" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Por tipo de demanda -->
+            <Border Style="{StaticResource Card}" CornerRadius="22" Padding="22,20" sup:Motion.Rise="0.37" sup:Motion.Lift="True">
+                <StackPanel>
+                    <TextBlock Text="Por tipo de demanda" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource Aurora.Text}" Margin="0,0,0,16" />
+                    <TextBlock x:Name="NoTypesText" Text="Nenhuma atividade nos últimos 30 dias." Style="{StaticResource Muted}" />
+                    <Grid x:Name="TypesPanel">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Width="116" Height="116" VerticalAlignment="Top">
+                            <ctl:DonutChart x:Name="Donut" Thickness="13" Track="{DynamicResource Aurora.RingTrack}" />
+                            <TextBlock x:Name="DonutCenter" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource Aurora.Text}" />
+                        </Grid>
+                        <ItemsControl x:Name="TypesList" Grid.Column="1" Margin="22,0,0,0" VerticalAlignment="Center">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="0,0,0,12">
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="10" Height="10" CornerRadius="4" Background="{Binding Swatch}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                                <TextBlock Text="{Binding Type}" FontSize="14" FontWeight="Medium" TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource Aurora.Text}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Summary}" FontSize="13" Style="{StaticResource Muted}" HorizontalAlignment="Right" />
+                                        </Grid>
+                                        <ProgressBar Style="{StaticResource GradientBar}" Value="{Binding Share}" Foreground="{Binding Swatch}" Margin="0,8,0,0" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>ProductivityMonitor</AssemblyName>
+    <RootNamespace>Productivity.App</RootNamespace>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <!-- Tema Fluent (ThemeMode) do WPF no .NET 10 é marcado como experimental: usado para tema claro/escuro/sistema (RF-13). -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Productivity.Infrastructure\Productivity.Infrastructure.csproj" />
+    <ProjectReference Include="..\Productivity.Application\Productivity.Application.csproj" />
+    <ProjectReference Include="..\Productivity.Domain\Productivity.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+

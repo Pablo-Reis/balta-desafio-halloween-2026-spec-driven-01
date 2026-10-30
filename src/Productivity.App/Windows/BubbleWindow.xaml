@@ -1,0 +1,118 @@
+﻿<Window x:Class="Productivity.App.Windows.BubbleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="clr-namespace:Productivity.App.Controls"
+        Title="Cronômetro" Width="448" Height="330"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
+        ShowInTaskbar="False" Topmost="True" ShowActivated="False"
+        FontFamily="Inter, Segoe UI Variable Text, Segoe UI" Foreground="{DynamicResource Aurora.Text}">
+    <Grid>
+        <!-- A ilha: largura, altura e raio animam juntos (0,55 s, cubic-bezier(.32,.72,0,1)) -->
+        <Border x:Name="Island" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,24,24,0"
+                Width="220" Height="48" CornerRadius="24" BorderThickness="1"
+                Background="{DynamicResource Aurora.Island}" BorderBrush="{DynamicResource Aurora.IslandBorder}"
+                PreviewMouseLeftButtonDown="OnIslandMouseDown" PreviewMouseMove="OnIslandMouseMove"
+                PreviewMouseLeftButtonUp="OnIslandMouseUp">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="34" ShadowDepth="14" Direction="270" Opacity="0.5" />
+            </Border.Effect>
+            <Grid x:Name="IslandContent">
+
+                <!-- Recolhido: pílula 196x48 -->
+                <Button x:Name="PillLayer" Style="{StaticResource BareButton}" Width="218" Height="46"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Click="OnExpandClick"
+                        AutomationProperties.Name="Expandir cronômetro">
+                    <Grid Margin="18,0,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ctl:StatusDot x:Name="PillDot" Margin="0,0,8,0" />
+                        <TextBlock x:Name="PillStatus" Grid.Column="1" FontSize="11.5" FontWeight="Medium" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource Aurora.TextNav}" />
+                        <TextBlock x:Name="PillTime" Grid.Column="2" FontSize="14" FontWeight="Medium" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Margin="8,0,12,0" Foreground="{DynamicResource Aurora.Text}" Typography.NumeralAlignment="Tabular" />
+                        <ctl:RingProgress x:Name="PillRing" Grid.Column="3" Width="26" Height="26" Thickness="3"
+                                          Stroke="{StaticResource Aurora.Accent}" Track="{DynamicResource Aurora.RingTrack}" />
+                    </Grid>
+                </Button>
+
+                <!-- Expandido: cartão 400x282 -->
+                <Grid x:Name="CardLayer" Width="398" Height="280" HorizontalAlignment="Right" VerticalAlignment="Top"
+                      Margin="0,0,0,0" RenderTransformOrigin="0.5,0">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform x:Name="CardScale" ScaleX="0.92" ScaleY="0.92" />
+                            <TranslateTransform x:Name="CardShift" Y="-12" />
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <Grid Margin="22,16,20,18">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+                            <Border x:Name="CardBadge" HorizontalAlignment="Left" CornerRadius="999" Padding="9,4,11,4">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctl:StatusDot x:Name="CardDot" Width="7" Height="7" Margin="0,0,8,0" />
+                                    <TextBlock x:Name="CardStatus" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Border>
+                            <Button x:Name="CollapseButton" Style="{StaticResource WindowButton}" Width="32" Height="32" HorizontalAlignment="Right"
+                                    Click="OnCollapseClick" AutomationProperties.Name="Recolher">
+                                <ctl:Icon Data="{StaticResource Icon.ChevronUp}" Width="14" Height="14" StrokeWidth="2.4" />
+                            </Button>
+                        </Grid>
+
+                        <TextBlock x:Name="CardTime" Grid.Row="1" Margin="0,8,0,0" LineHeight="58" LineStackingStrategy="BlockLineHeight" Style="{StaticResource Timer}" FontSize="56"
+                                   Foreground="{DynamicResource Aurora.TimeText}" AutomationProperties.Name="Tempo da sessão" />
+                        <TextBlock x:Name="CardExtra" Grid.Row="2" FontSize="12" Margin="0,6,0,0" Style="{StaticResource Muted}" />
+
+                        <StackPanel Grid.Row="3" Margin="0,12,0,0">
+                            <TextBlock x:Name="CardType" Style="{StaticResource Overline}" FontSize="10" />
+                            <TextBlock x:Name="CardTitle" FontSize="17" FontWeight="SemiBold" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource Aurora.Text}" />
+                            <TextBlock x:Name="CardDescription" FontSize="12" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource Aurora.TextSecondary}" />
+                        </StackPanel>
+
+                        <Grid Grid.Row="5" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="8" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="PauseButton" Style="{StaticResource GlassButton}" FontSize="13" Click="OnPauseClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctl:Icon x:Name="PauseIcon" Data="{StaticResource Icon.Pause}" Filled="True" Width="13" Height="13" Margin="0,0,8,0" />
+                                    <TextBlock x:Name="PauseLabel" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="2" Style="{StaticResource AccentButton}" FontSize="13" Click="OnFinishClick">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctl:Icon Data="{StaticResource Icon.Stop}" Filled="True" Width="12" Height="12" Margin="0,0,8,0" />
+                                    <TextBlock Text="Finalizar" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- Linha de progresso de 2px na base (segundos do minuto) -->
+                <Border Height="2" VerticalAlignment="Bottom" Background="{DynamicResource Aurora.RingTrack}" IsHitTestVisible="False">
+                    <Border x:Name="ProgressFill" HorizontalAlignment="Left" Width="0" Background="{StaticResource Aurora.Accent}" />
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+
+
+
