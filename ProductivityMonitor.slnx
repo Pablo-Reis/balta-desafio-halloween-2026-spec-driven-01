@@ -4,9 +4,12 @@
     <Project Path="src/Productivity.Application/Productivity.Application.csproj" />
     <Project Path="src/Productivity.Domain/Productivity.Domain.csproj" />
     <Project Path="src/Productivity.Infrastructure/Productivity.Infrastructure.csproj" />
+    <Project Path="src/Productivity.Installer/Productivity.Installer.csproj" />
+    <Project Path="src/Productivity.Setup.Core/Productivity.Setup.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Productivity.Application.Tests/Productivity.Application.Tests.csproj" />
     <Project Path="tests/Productivity.Domain.Tests/Productivity.Domain.Tests.csproj" />
+    <Project Path="tests/Productivity.Setup.Tests/Productivity.Setup.Tests.csproj" />
   </Folder>
 </Solution>

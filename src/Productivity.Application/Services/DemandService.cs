@@ -1,10 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Productivity.Application.Abstractions;
 using Productivity.Application.Persistence;
 using Productivity.Domain;
 
 namespace Productivity.Application.Services;
+
+/// <summary>Filtros do histórico. Datas são dias do calendário local (início da demanda), com os dois extremos incluídos.</summary>
+public sealed record DemandFilter(string? Text = null, DateOnly? From = null, DateOnly? To = null);
+
+/// <summary>Demandas iniciadas em um mesmo dia e o total trabalhado nelas.</summary>
+public sealed record DemandDayGroup(DateOnly Day, IReadOnlyList<Demand> Demands, TimeSpan Worked);
 
 public interface IDemandService
 {
@@ -27,6 +34,9 @@ public interface IDemandService
     Task<Demand?> GetByIdAsync(Guid id);
 
     Task<IReadOnlyList<Demand>> ListAsync(int take = 200);
+
+    /// <summary>Histórico filtrado por título e/ou data, agrupado por dia (mais recente primeiro).</summary>
+    Task<IReadOnlyList<DemandDayGroup>> SearchAsync(DemandFilter filter, int take = 500);
 
     Task<Demand> UpdateDetailsAsync(Guid id, string title, string type, string? description);
 
@@ -109,6 +119,52 @@ public sealed class DemandService : IDemandService
             .ToListAsync();
     }
 
+    public async Task<IReadOnlyList<DemandDayGroup>> SearchAsync(DemandFilter filter, int take = 500)
+    {
+        if (filter.From is { } from && filter.To is { } to && from > to)
+            throw new DomainException("A data inicial não pode ser maior que a data final.");
+
+        var zone = _clock.TimeZone;
+        var now = _clock.UtcNow;
+
+        await using var db = await _factory.CreateDbContextAsync();
+        IQueryable<Demand> query = db.Demands.AsNoTracking().Include(d => d.Events);
+
+        if (filter.From is { } start)
+        {
+            var startUtc = LocalMidnightToUtc(start, zone);
+            query = query.Where(d => d.CreatedAt >= startUtc);
+        }
+
+        if (filter.To is { } end)
+        {
+            var endUtc = LocalMidnightToUtc(end.AddDays(1), zone);
+            query = query.Where(d => d.CreatedAt < endUtc);
+        }
+
+        var demands = await query.OrderByDescending(d => d.CreatedAt).ToListAsync();
+
+        // Busca por título sem diferenciar maiúsculas/minúsculas nem acentos ("integracao" acha "Integração").
+        if (!string.IsNullOrWhiteSpace(filter.Text))
+        {
+            var term = filter.Text.Trim();
+            var compare = CultureInfo.InvariantCulture.CompareInfo;
+            demands = demands
+                .Where(d => compare.IndexOf(d.Title, term, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0)
+                .ToList();
+        }
+
+        return demands
+            .Take(take)
+            .GroupBy(d => DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(d.CreatedAt, zone)))
+            .OrderByDescending(g => g.Key)
+            .Select(g => new DemandDayGroup(
+                g.Key,
+                g.ToList(),
+                g.Aggregate(TimeSpan.Zero, (sum, d) => sum + d.GetWorkedTime(now))))
+            .ToList();
+    }
+
     public async Task<Demand> UpdateDetailsAsync(Guid id, string title, string type, string? description)
     {
         await using var db = await _factory.CreateDbContextAsync();
@@ -126,6 +182,14 @@ public sealed class DemandService : IDemandService
     {
         await using var db = await _factory.CreateDbContextAsync();
         return await db.Demands.AsNoTracking().Select(d => d.Type).Distinct().OrderBy(t => t).ToListAsync();
+    }
+
+    private static DateTime LocalMidnightToUtc(DateOnly day, TimeZoneInfo zone)
+    {
+        var local = DateTime.SpecifyKind(day.ToDateTime(TimeOnly.MinValue), DateTimeKind.Unspecified);
+        if (zone.IsInvalidTime(local))
+            local = local.AddHours(1);
+        return TimeZoneInfo.ConvertTimeToUtc(local, zone);
     }
 
     private async Task<Demand> ChangeActiveAsync(Action<Demand> change, string logAction)
@@ -148,3 +212,4 @@ public sealed class DemandService : IDemandService
         return query.OrderByDescending(d => d.CreatedAt).FirstOrDefaultAsync();
     }
 }
+

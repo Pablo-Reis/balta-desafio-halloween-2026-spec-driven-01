@@ -271,6 +271,9 @@ public sealed class AppController
 
     private void SyncAutoStart()
     {
+        if (AppPaths.IsSandbox)
+            return; // execução isolada nunca altera o registro do Windows
+
         try
         {
             // Reescreve quando ativo para manter o caminho do executável atualizado.
@@ -292,4 +295,5 @@ public sealed class AppController
         [HotkeyAction.Note] = Settings.NoteHotkey
     });
 }
+
 

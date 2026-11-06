@@ -42,7 +42,17 @@ Status: **Concluída** = implementada e verificada como descrito em "Concluída 
 | T-36 | Redesenhar balão como pílula que vira cartão (largura, altura e raio animados) | RF-14, RF-15, RF-22, D-17 | T-21, T-22, T-32 | Transição de 0,55 s sem cortar conteúdo; botões inteiros no cartão | Concluída (manual) |
 | T-37 | **Arrastar o balão** pela pílula e pelo corpo do cartão, sem quebrar o clique que expande | RF-21, RN-08, D-18 | T-36 | Arrasto move a janela; clique sem mover expande; botões não arrastam | Concluída (manual) |
 | T-38 | Manter a posição arrastada só durante a sessão e limitar à área visível das telas | RF-21, RN-08, CA-06, CA-07, D-18 | T-37 | Reabrir o programa volta ao canto; soltar fora da tela deixa o cartão inteiro visível | Concluída (manual) |
-| T-39 | Gerar pacote .zip com `Instalar.cmd`/`Desinstalar.cmd`/`LEIA-ME.txt` e instalação por usuário | CA-11, D-20 | T-30 | Extrair e executar o instalador coloca o programa no Menu Iniciar | Concluída (manual: arquivos e instalação em destino de teste; `Instalar.cmd` não foi executado de ponta a ponta) |
+| T-39 | Gerar pacote .zip com `Instalar.cmd`/`Desinstalar.cmd`/`LEIA-ME.txt` e instalação por usuário | CA-11, D-20 | T-30 | Extrair e executar o instalador coloca o programa no Menu Iniciar | Substituída pelas T-43 a T-48 (o zip não tinha assistente) |
+| T-40 | Busca no histórico por título (sem maiúsculas/acentos) e por dia, agrupada por dia com total trabalhado: `DemandService.SearchAsync` | RF-24, RF-25, RN-10 a RN-12, D-22 | T-09 | Testes cobrem título, acentos, intervalo com extremos, fuso, limite, total sem pausas e datas invertidas | Concluída |
+| T-41 | Tela de histórico: busca por título, datas De/Até, atalhos Hoje/7 dias/30 dias, limpar filtros, contagem e estado sem resultados | RF-24, CA-15 | T-40, T-27 | Filtrar atualiza a lista; datas invertidas avisam sem buscar; chips refletem as datas | Concluída (manual) |
+| T-42 | Separação visual por dia: cabeçalho ("Hoje", "Ontem", data), quantidade, total trabalhado, linha divisória e espaço entre grupos | RF-25, CA-16 | T-40, T-41 | Dias diferentes aparecem em grupos distintos, sem seleção automática | Concluída (manual) |
+| T-43 | Criar `Setup.Core`: comparação de versão (instalar/atualizar/reinstalar/retroceder), validação da pasta, argumentos e extração do pacote com progresso e proteção contra caminhos fora da pasta | RN-13, D-24 | T-01 | 37 testes cobrem as regras | Concluída |
+| T-44 | Motor de instalação: encerrar instâncias, extrair para pasta temporária, trocar com restauração em falha, criar atalhos, registrar na lista de aplicativos, remover instalação antiga por usuário | RF-23, RN-13, D-25 | T-43 | Instala, reinstala sem restos e remove arquivos antigos | Concluída (manual) |
+| T-45 | Assistente gráfico: Bem-vindo, Pasta, Pronto, Progresso e Conclusão com "Abrir programa"/"Fechar", cancelar com confirmação e tema Aurora | RF-23, CA-11 | T-44 | Todas as páginas navegam, validam a pasta, mostram progresso e abrem o programa | Concluída (manual) |
+| T-46 | Empacotar em arquivo único: `package.ps1` publica app, junta desinstalador, compacta e embute no instalador autocontido | RF-23, D-20 | T-45 | `artifacts/ProductivityMonitor-Setup-<versão>.exe` roda sem .NET instalado e sem arquivos auxiliares | Concluída (manual) |
+| T-47 | Desinstalador na lista de aplicativos (`uninstall.ps1`): confirma, pergunta sobre os dados, pede elevação se preciso, remove pasta, atalhos e registro | RN-15, CA-14, D-25 | T-44 | O comando registrado remove tudo sem sobras | Concluída (manual, modo silencioso; diálogos de confirmação não foram exercitados) |
+| T-48 | Elevação sob demanda: reabrir como administrador em `/resume` só quando a pasta exigir, passando a vez entre as duas instâncias | RN-14, D-24 | T-45 | Passagem entre instâncias instala sem UAC na pasta livre; UAC real grava em Arquivos de Programas | Parcial: passagem entre instâncias testada; o pedido real de UAC e a gravação em Arquivos de Programas dependem de validação manual |
+| T-49 | Modo isolado `PRODUCTIVITYMONITOR_HOME` para testes e demonstrações | D-23 | T-07 | Executar com a variável não toca nos dados nem no registro do usuário | Concluída (manual) |
 
 ## Verificação manual de T-37 e T-38
 
@@ -54,3 +64,12 @@ Executado com o programa em funcionamento (simulando o mouse):
 Não exercitado em execução (decorre do desenho, a posição existe só em memória e nada é gravado): voltar ao canto ao reabrir o programa, e o balão reaparecer onde foi deixado quando uma nova demanda começa na mesma sessão.
 
 Não há teste automatizado do arrasto: é comportamento de janela, sem regra de negócio, e o projeto de testes não referencia a camada WPF.
+
+## Verificação manual de T-41, T-42 e T-45 a T-48
+
+Executada com dados de demonstração e pastas de teste em modo isolado (T-49), sem tocar nos dados nem na instalação do usuário:
+- Histórico: 11 demandas em 5 dias agrupadas com cabeçalho e total; busca "integracao" encontrou "Integração…"; "7 dias" preencheu as datas e filtrou; sem resultado mostra a mensagem com o botão de limpar.
+- Instalador: página de boas-vindas, pasta inválida (raiz do disco) recusada, resumo com aviso de administrador para Arquivos de Programas, progresso "Copiando arquivos… 355 de 484", conclusão com "Abrir programa" e "Fechar"; "Abrir programa" abriu o aplicativo a partir da pasta instalada; rodar de novo mostrou "Reinstalar"; reinstalação removeu arquivo antigo sem deixar `.setup-new` nem `.setup-old`.
+- Desinstalação pelo comando registrado removeu pasta, atalhos (Menu Iniciar e Área de Trabalho) e registro.
+
+Não exercitado: o pedido real de UAC e a instalação dentro de Arquivos de Programas; os diálogos de confirmação do desinstalador (testado em modo silencioso); o botão Cancelar durante a cópia.

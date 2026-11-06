@@ -45,6 +45,24 @@ public static class Format
     public static string DateTimeMinutes(DateTime utc) =>
         utc.ToLocalTime().ToString("dd/MM HH:mm", Culture);
 
+    public static string TimeOfDay(DateTime utc) =>
+        utc.ToLocalTime().ToString("HH:mm", Culture);
+
+    /// <summary>"Hoje", "Ontem" ou o dia por extenso (com o ano quando não é o atual).</summary>
+    public static string DayLabel(DateOnly day, DateOnly today)
+    {
+        if (day == today)
+            return "Hoje";
+        if (day == today.AddDays(-1))
+            return "Ontem";
+
+        var text = day.ToString(day.Year == today.Year ? "dddd, d 'de' MMMM" : "dddd, d 'de' MMMM 'de' yyyy", Culture);
+        return char.ToUpper(text[0], Culture) + text[1..];
+    }
+
+    public static string Count(int value, string singular, string plural) =>
+        $"{value} {(value == 1 ? singular : plural)}";
+
     public static string EventLabel(DemandEventKind kind) => kind switch
     {
         DemandEventKind.Started => "Início",
@@ -61,4 +79,5 @@ public static class Format
         _ => "Finalizada"
     };
 }
+
 

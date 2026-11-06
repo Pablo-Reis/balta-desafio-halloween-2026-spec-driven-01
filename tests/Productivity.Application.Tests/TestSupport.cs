@@ -9,7 +9,7 @@ public sealed class FakeClock : IClock
 {
     public DateTime UtcNow { get; set; } = new(2026, 10, 29, 12, 0, 0, DateTimeKind.Utc);
 
-    public TimeZoneInfo TimeZone => TimeZoneInfo.Utc;
+    public TimeZoneInfo TimeZone { get; set; } = TimeZoneInfo.Utc;
 
     public void Advance(TimeSpan span) => UtcNow += span;
 }
@@ -31,3 +31,4 @@ public sealed class TestDbFactory : IDbContextFactory<AppDbContext>, IDisposable
 
     public void Dispose() => _connection.Dispose();
 }
+

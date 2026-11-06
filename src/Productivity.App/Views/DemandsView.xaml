@@ -4,25 +4,107 @@
              Loaded="OnLoaded" Unloaded="OnUnloaded">
     <Grid Margin="28">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="350" />
             <ColumnDefinition Width="20" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Top" Text="Demandas" Style="{StaticResource PageTitle}" />
-            <ListBox x:Name="DemandList" Style="{StaticResource PlainList}" ItemContainerStyle="{StaticResource DemandItem}" SelectionChanged="OnDemandSelected" HorizontalContentAlignment="Stretch">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="4,6">
-                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Muted}" FontSize="12" />
-                            <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="12" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </DockPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Demandas" Style="{StaticResource PageTitle}" Margin="0,0,0,12" />
+
+            <!-- Filtros: título e data -->
+            <StackPanel Grid.Row="1">
+                <Grid>
+                    <TextBox x:Name="SearchBox" Padding="10,7,34,7" MaxLength="100" TextChanged="OnSearchTextChanged"
+                             PreviewKeyDown="OnSearchKeyDown" AutomationProperties.Name="Buscar por título" />
+                    <TextBlock x:Name="SearchPlaceholder" Text="Buscar por título…" IsHitTestVisible="False" Margin="12,0,0,0"
+                               VerticalAlignment="Center" Style="{StaticResource Muted}" Opacity="0.7" />
+
+                </Grid>
+
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="De" FontSize="11" Style="{StaticResource Muted}" Margin="2,0,0,3" />
+                        <DatePicker x:Name="FromPicker" HorizontalAlignment="Stretch" SelectedDateChanged="OnDateChanged"
+                                    AutomationProperties.Name="Data inicial" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Até" FontSize="11" Style="{StaticResource Muted}" Margin="2,0,0,3" />
+                        <DatePicker x:Name="ToPicker" HorizontalAlignment="Stretch" SelectedDateChanged="OnDateChanged"
+                                    AutomationProperties.Name="Data final" />
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <ToggleButton x:Name="TodayChip" Content="Hoje" Style="{StaticResource FilterChip}" Checked="OnQuickRangeToggled" Unchecked="OnQuickRangeToggled" Tag="1" Margin="0,0,6,0" />
+                    <ToggleButton x:Name="WeekChip" Content="7 dias" Style="{StaticResource FilterChip}" Checked="OnQuickRangeToggled" Unchecked="OnQuickRangeToggled" Tag="7" Margin="0,0,6,0" />
+                    <ToggleButton x:Name="MonthChip" Content="30 dias" Style="{StaticResource FilterChip}" Checked="OnQuickRangeToggled" Unchecked="OnQuickRangeToggled" Tag="30" Margin="0,0,10,0" />
+                    <Button x:Name="ClearFiltersButton" Content="Limpar filtros" Style="{StaticResource LinkButton}" VerticalAlignment="Center"
+                            Click="OnClearFiltersClick" />
+                </StackPanel>
+
+                <TextBlock x:Name="FilterError" Foreground="{StaticResource PausedBrush}" FontSize="12" TextWrapping="Wrap"
+                           Margin="2,8,0,0" Visibility="Collapsed" />
+            </StackPanel>
+
+            <TextBlock x:Name="ResultCount" Grid.Row="2" FontSize="12" Style="{StaticResource Muted}" Margin="2,14,0,0" />
+
+            <!-- Histórico agrupado por dia -->
+            <Grid Grid.Row="3" Margin="0,2,0,0">
+                <ListBox x:Name="DemandList" IsSynchronizedWithCurrentItem="False" Style="{StaticResource PlainList}" ItemContainerStyle="{StaticResource DemandItem}"
+                         SelectionChanged="OnDemandSelected" HorizontalContentAlignment="Stretch"
+                         AutomationProperties.Name="Histórico de demandas">
+                    <ListBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="2,16,2,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name.Label}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource Aurora.Text}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Name.Summary}" FontSize="12" Style="{StaticResource Muted}"
+                                                       Margin="10,2,0,0" />
+                                        </Grid>
+                                        <Border Height="1" Margin="0,8,0,0" Background="{StaticResource Aurora.DayRule}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListBox.GroupStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="4,6">
+                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Muted}" FontSize="12" />
+                                <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="12" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel x:Name="NoResults" Visibility="Collapsed" VerticalAlignment="Top" Margin="0,30,0,0">
+                    <TextBlock x:Name="NoResultsText" TextWrapping="Wrap" TextAlignment="Center" Style="{StaticResource Muted}" />
+                    <Button Content="Limpar filtros" Style="{StaticResource GlassButton}" MinHeight="36" Padding="16,0"
+                            Margin="0,12,0,0" HorizontalAlignment="Center" Click="OnClearFiltersClick" />
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <TextBlock x:Name="EmptyText" Grid.Column="2" Text="Selecione uma demanda para ver os detalhes."
                    Style="{StaticResource Muted}" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -98,4 +180,6 @@
         </ScrollViewer>
     </Grid>
 </UserControl>
+
+
 

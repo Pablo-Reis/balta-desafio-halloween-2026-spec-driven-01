@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Markup;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Productivity.App.Support;
@@ -9,8 +10,10 @@ namespace Productivity.App;
 
 public partial class App : System.Windows.Application
 {
-    private const string MutexName = "ProductivityMonitor.SingleInstance";
-    private const string ShowEventName = "ProductivityMonitor.ShowWindow";
+    // Em modo isolado (testes) a instância única não conflita com a do usuário.
+    private static readonly string Suffix = AppPaths.IsSandbox ? ".Sandbox" : string.Empty;
+    private static readonly string MutexName = $"ProductivityMonitor.SingleInstance{Suffix}";
+    private static readonly string ShowEventName = $"ProductivityMonitor.ShowWindow{Suffix}";
 
     private Mutex? _mutex;
     private EventWaitHandle? _showEvent;
@@ -19,6 +22,11 @@ public partial class App : System.Windows.Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        // Calendário, meses e datas dos controles em português do Brasil.
+        FrameworkElement.LanguageProperty.OverrideMetadata(
+            typeof(FrameworkElement),
+            new FrameworkPropertyMetadata(XmlLanguage.GetLanguage("pt-BR")));
 
         _mutex = new Mutex(true, MutexName, out var isFirstInstance);
         _showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
@@ -104,3 +112,5 @@ public partial class App : System.Windows.Application
         thread.Start();
     }
 }
+
+
